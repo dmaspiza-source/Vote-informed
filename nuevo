@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informed Vote</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0e1a 0%,#111827 50%,#0a0e1a 100%);color:#e2e8f0;font-family:'Sora','Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+.box{max-width:560px;width:100%}
+.wide{max-width:800px;width:100%}
+.step-ind{font-size:13px;color:#7c3aed;font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+h1.title{font-size:48px;font-weight:800;margin:0 0 16px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+h2.title2{font-size:32px;font-weight:800;margin:0 0 12px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2.h2{font-size:28px;font-weight:700;margin:0 0 12px;color:#f1f5f9}
+h3.h3{font-size:18px;font-weight:700;margin:0 0 12px;color:#f1f5f9}
+.sub{font-size:18px;color:#94a3b8;line-height:1.6;margin:0 0 8px}
+.tag{font-size:14px;color:#64748b;font-style:italic;margin:0 0 32px}
+.btn{background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;border:none;padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,0.3);font-family:inherit}
+.btn:disabled{opacity:0.4;cursor:default}
+.btn2{background:rgba(255,255,255,0.05);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;margin:0 auto 24px;box-shadow:0 0 40px rgba(99,102,241,0.3)}
+.cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px 20px;width:180px;text-align:center}
+.card span{font-size:28px}
+.card h3{font-size:16px;font-weight:600;margin:8px 0 4px;color:#e2e8f0}
+.card p{font-size:13px;color:#64748b;margin:0}
+.opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 20px;color:#e2e8f0;font-size:16px;cursor:pointer;text-align:left;font-family:inherit;width:100%;display:block}
+.opt.active{background:rgba(99,102,241,0.15);border-color:#6366f1;box-shadow:0 0 20px rgba(99,102,241,0.15)}
+.chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:10px 18px;color:#94a3b8;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.chip.active{background:rgba(99,102,241,0.2);border-color:#6366f1;color:#c7d2fe}
+.nav{display:flex;justify-content:space-between;margin-top:24px}
+.sec{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;margin-bottom:16px}
+.lbl{font-size:11px;color:#7c3aed;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.rank-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;margin-bottom:8px}
+.rank-num{font-size:14px;font-weight:700;color:#7c3aed;min-width:30px}
+.arr{background:none;border:none;color:#64748b;cursor:pointer;font-size:12px;padding:4px 8px}
+.issue-block{margin-bottom:12px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+.issue-head{width:100%;background:rgba(255,255,255,0.04);border:none;padding:14px 20px;color:#e2e8f0;font-size:16px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:inherit}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding:16px;background:rgba(0,0,0,0.2)}
+.cand-card{background:rgba(255,255,255,0.03);border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.06)}
+.cand-name{font-size:18px;font-weight:700;color:#f1f5f9;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.badge{font-size:11px;background:rgba(99,102,241,0.2);color:#a5b4fc;padding:3px 10px;border-radius:100px}
+.inp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;color:#e2e8f0;font-size:15px;outline:none;box-sizing:border-box;font-family:inherit}
+textarea.inp{resize:vertical;line-height:1.6;min-height:120px}
+.fmt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.source-link{font-size:13px;color:#a5b4fc;background:rgba(99,102,241,0.1);padding:6px 14px;border-radius:100px;text-decoration:none;display:inline-block;margin:4px}
+.diff-item{font-size:14px;color:#cbd5e1;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.5}
+.voice-result{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:16px;padding:24px;margin-top:24px}
+.voice-text{font-size:15px;color:#e2e8f0;line-height:1.7;background:rgba(0,0,0,0.2);border-radius:12px;padding:20px;white-space:pre-wrap}
+.hidden{display:none}
+.footer{text-align:center;margin-top:48px;padding:24px 0;border-top:1px solid rgba(255,255,255,0.06)}
+.footer p{font-size:12px;color:#475569;margin:0 0 4px}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const ISSUES=[
+{id:"economy",label:"Economy & Jobs",icon:"💼"},
+{id:"healthcare",label:"Healthcare",icon:"🏥"},
+{id:"immigration",label:"Immigration",icon:"🌍"},
+{id:"education",label:"Education",icon:"📚"},
+{id:"climate",label:"Climate & Energy",icon:"🌱"},
+{id:"guns",label:"Gun Policy",icon:"🔫"},
+{id:"housing",label:"Housing",icon:"🏠"},
+{id:"taxes",label:"Taxes",icon:"💰"},
+{id:"criminal_justice",label:"Criminal Justice",icon:"⚖️"},
+{id:"foreign_policy",label:"Foreign Policy",icon:"🕊️"}
+];
+
+const ELECTIONS=["2024 US Presidential Election","2026 US Midterm Elections"];
+
+const FORMATS=[
+{id:"social",label:"Social Media Post",icon:"📱",desc:"Short, shareable, impactful"},
+{id:"letter",label:"Letter to Representative",icon:"✉️",desc:"Formal, persuasive, actionable"},
+{id:"argument",label:"Dinner Table Argument",icon:"🍽️",desc:"Conversational, fact-based"},
+{id:"essay",label:"Personal Essay",icon:"📝",desc:"Reflective, authentic"}
+];
+
+const DATA={
+"2024 US Presidential Election":{
+election_name:"2024 US Presidential Election",
+election_context:"The 2024 presidential election was held on November 5, 2024. Republican Donald Trump defeated Democrat Kamala Harris, winning 312 electoral votes to Harris's 226. Key issues included the economy, immigration, and abortion rights.",
+candidates:[
+{name:"Donald Trump",party:"Republican",positions:[
+{issue:"Economy",stance:"Promised to extend the 2017 Tax Cuts and Jobs Act, impose 10-20% tariffs on all imports and 60% on Chinese goods, and cut regulations to boost domestic manufacturing.",evidence:"Signed the Tax Cuts and Jobs Act in 2017. Campaigned on universal baseline tariffs and 'America First' trade policy.",impact:"Tariffs could raise consumer prices on imported goods. Tax cuts primarily benefit higher earners and corporations.",source:"ballotpedia.org, reuters.com"},
+{issue:"Healthcare",stance:"Promised to repeal the Affordable Care Act and replace it with a better plan, protect Medicare, and reduce drug prices through competition.",evidence:"Attempted ACA repeal in 2017 (failed in Senate). Signed executive orders on drug pricing transparency.",impact:"ACA repeal could affect 40+ million who gained coverage. Drug pricing reforms could lower costs for some medications.",source:"kff.org, whitehouse.gov"},
+{issue:"Immigration",stance:"Proposed mass deportation of undocumented immigrants, completing the border wall, reinstating 'Remain in Mexico' policy, and ending birthright citizenship.",evidence:"Built 450+ miles of border wall in first term. Implemented Title 42 and Remain in Mexico policy.",impact:"Mass deportation would affect 11+ million undocumented residents and industries relying on immigrant labor.",source:"cbp.gov, migrationpolicy.org"},
+{issue:"Education",stance:"Proposed eliminating the Department of Education, expanding school choice and vouchers, and banning 'critical race theory' in schools.",evidence:"Appointed Betsy DeVos as Education Secretary who promoted school choice.",impact:"Federal education funding distribution could change significantly. School vouchers would redirect public funds to private schools.",source:"ed.gov, ballotpedia.org"},
+{issue:"Climate",stance:"Pledged to withdraw from the Paris Climate Agreement again, expand fossil fuel drilling, and roll back Biden-era environmental regulations.",evidence:"Withdrew US from Paris Agreement in first term. Opened federal lands for oil/gas leasing.",impact:"Increased fossil fuel production could lower energy prices short-term but accelerate climate change.",source:"epa.gov, nytimes.com"},
+{issue:"Gun Policy",stance:"Strong supporter of Second Amendment rights. Opposed new gun control measures. Supported arming teachers.",evidence:"Signed no major gun control legislation in first term. Received NRA endorsement.",impact:"No new federal restrictions on firearms. Focus on mental health and school security.",source:"nra.org, congress.gov"},
+{issue:"Housing",stance:"Proposed reducing regulations on homebuilding, opening federal lands for housing, and using tax incentives for homeownership.",evidence:"Signed Opportunity Zone legislation in 2017 tax bill.",impact:"Deregulation could increase housing supply but may weaken building standards.",source:"hud.gov, brookings.edu"},
+{issue:"Taxes",stance:"Proposed making 2017 tax cuts permanent, eliminating taxes on tips and Social Security benefits, and lowering corporate tax rate to 15%.",evidence:"Signed Tax Cuts and Jobs Act cutting corporate rate from 35% to 21%.",impact:"Lower taxes for most brackets but significantly increases federal deficit. No-tax-on-tips helps service workers.",source:"irs.gov, cbo.gov"},
+{issue:"Criminal Justice",stance:"Campaigned on 'law and order' platform. Proposed increasing police funding and death penalty expansion.",evidence:"Signed First Step Act in 2018 (bipartisan criminal justice reform).",impact:"Increased policing could reduce crime but raises civil liberties concerns.",source:"congress.gov, bjs.gov"},
+{issue:"Foreign Policy",stance:"Pursued 'America First' approach. Skeptical of NATO. Proposed negotiating end to Ukraine-Russia war.",evidence:"Brokered Abraham Accords. Imposed tariffs on China. Met with North Korea's Kim Jong Un.",impact:"Reduced US military commitments abroad could save costs but may embolden adversaries.",source:"state.gov, foreignaffairs.com"}
+]},
+{name:"Kamala Harris",party:"Democrat",positions:[
+{issue:"Economy",stance:"Proposed raising corporate tax rate to 28%, expanding child tax credit to $6,000 for newborns, and banning price gouging on groceries.",evidence:"Biden-Harris administration oversaw post-COVID recovery with 15+ million jobs created.",impact:"Higher corporate taxes could fund social programs. Expanded child tax credit benefits working families.",source:"whitehouse.gov, congress.gov"},
+{issue:"Healthcare",stance:"Supported strengthening the ACA, expanding Medicare, capping insulin at $35, and protecting reproductive rights.",evidence:"Cast tie-breaking vote for Inflation Reduction Act which capped insulin prices for Medicare.",impact:"Insulin cap helps 7+ million diabetic Americans. Abortion protections restore pre-Dobbs access.",source:"kff.org, congress.gov"},
+{issue:"Immigration",stance:"Supported comprehensive immigration reform with path to citizenship, increased border security funding.",evidence:"Supported bipartisan border security bill that included $20B for border security.",impact:"Path to citizenship would affect 11+ million undocumented. Increased processing reduces asylum backlog.",source:"congress.gov, uscis.gov"},
+{issue:"Education",stance:"Proposed increasing teacher pay, expanding universal pre-K, making community college free.",evidence:"Biden-Harris administration approved $167B in student debt relief.",impact:"Higher teacher salaries could address teacher shortage (300K+ vacancies).",source:"ed.gov, whitehouse.gov"},
+{issue:"Climate",stance:"Supported staying in Paris Agreement, investing in clean energy, achieving net-zero emissions by 2050.",evidence:"Cast tie-breaking vote for Inflation Reduction Act — largest climate investment ($369B).",impact:"Clean energy investment creates jobs in solar/wind. Net-zero requires major industrial transformation.",source:"epa.gov, whitehouse.gov"},
+{issue:"Gun Policy",stance:"Supported universal background checks, assault weapons ban, red flag laws.",evidence:"Biden-Harris signed Bipartisan Safer Communities Act in 2022.",impact:"Universal background checks could prevent some gun sales to prohibited buyers.",source:"congress.gov, atf.gov"},
+{issue:"Housing",stance:"Proposed $25,000 down payment assistance for first-time buyers, building 3 million new housing units.",evidence:"Biden-Harris administration proposed Housing Supply Action Plan.",impact:"$25K assistance directly helps first-time buyers. New construction reduces housing shortage.",source:"hud.gov, whitehouse.gov"},
+{issue:"Taxes",stance:"Proposed raising taxes on those earning $400K+, increasing corporate rate to 28%, expanding credits for working families.",evidence:"Supported Inflation Reduction Act's 15% corporate minimum tax.",impact:"Tax increases affect top 2% of earners. Working family credits reduce child poverty.",source:"irs.gov, cbo.gov"},
+{issue:"Criminal Justice",stance:"Supported police reform, ending cash bail, marijuana decriminalization.",evidence:"As AG of California, created implicit bias training for police.",impact:"Police reform could reduce use of force incidents. Marijuana decriminalization affects 40K+ federal cases.",source:"congress.gov, doj.gov"},
+{issue:"Foreign Policy",stance:"Supported strong NATO alliance, continued Ukraine aid, diplomatic engagement with China.",evidence:"Biden-Harris administration provided $75B+ in Ukraine aid.",impact:"Continued Ukraine support maintains Western alliance but costs significant federal spending.",source:"state.gov, whitehouse.gov"}
+]}
+],
+key_differences:["Economy: Trump favors tax cuts and tariffs; Harris favors targeted tax increases on wealthy","Immigration: Trump proposes mass deportation; Harris supports path to citizenship with border security","Climate: Trump wants to expand fossil fuels; Harris invested $369B in clean energy via IRA","Healthcare: Trump wants to repeal ACA; Harris wants to expand it and protect abortion access"],
+sources:[{name:"Ballotpedia",url:"https://ballotpedia.org"},{name:"Reuters",url:"https://reuters.com"},{name:"Congress.gov",url:"https://congress.gov"},{name:"Kaiser Family Foundation",url:"https://kff.org"},{name:"CBO",url:"https://cbo.gov"}]
+},
+"2026 US Midterm Elections":{
+election_name:"2026 US Midterm Elections",
+election_context:"The 2026 midterms will determine control of the House (all 435 seats) and Senate (33 seats). These elections serve as a referendum on the Trump administration's second term policies.",
+candidates:[
+{name:"Republican Candidates",party:"Republican",positions:[
+{issue:"Economy",stance:"Support extending Trump tax cuts, maintaining tariff policies, and reducing government spending.",evidence:"House Republicans passed bills to extend TCJA provisions.",impact:"Continued tax cuts increase deficit but may stimulate business investment.",source:"congress.gov"},
+{issue:"Healthcare",stance:"Focus on reducing costs through market competition, opposing government-run healthcare.",evidence:"Multiple bills for healthcare price transparency and expanded HSAs.",impact:"Market-based reforms may lower some costs but leave coverage gaps.",source:"congress.gov, kff.org"},
+{issue:"Immigration",stance:"Support border wall funding, increased deportation, ending sanctuary cities.",evidence:"House passed H.R. 2 (Secure the Border Act).",impact:"Stricter enforcement affects immigrant communities and dependent industries.",source:"congress.gov, cbp.gov"},
+{issue:"Education",stance:"Support school choice, parental rights in curriculum, reducing federal involvement.",evidence:"Multiple 'Parents Bill of Rights' proposals.",impact:"School choice could redirect public education funding.",source:"congress.gov, ed.gov"},
+{issue:"Climate",stance:"Prioritize energy independence through fossil fuels, oppose Green New Deal.",evidence:"Votes to repeal IRA clean energy provisions.",impact:"Fossil fuel expansion lowers energy costs short-term.",source:"congress.gov, eia.gov"},
+{issue:"Gun Policy",stance:"Oppose new gun restrictions, support concealed carry reciprocity.",evidence:"Concealed Carry Reciprocity Act proposals.",impact:"National reciprocity would allow concealed carry across state lines.",source:"congress.gov"},
+{issue:"Housing",stance:"Reduce regulations to increase supply, oppose federal rent control.",evidence:"Opposition to federal housing mandates.",impact:"Deregulation could speed construction but reduce affordable requirements.",source:"congress.gov"},
+{issue:"Taxes",stance:"Make Trump tax cuts permanent, reduce capital gains taxes.",evidence:"Multiple bills to extend TCJA permanently.",impact:"Permanent cuts benefit most brackets but add trillions to debt.",source:"congress.gov, cbo.gov"},
+{issue:"Criminal Justice",stance:"Increase police funding, tougher sentencing.",evidence:"Proposed bills increasing penalties for certain crimes.",impact:"Tougher sentencing may deter crime but increases incarceration costs.",source:"congress.gov"},
+{issue:"Foreign Policy",stance:"Strong military spending, reassessing Ukraine support.",evidence:"Votes for increased defense budgets.",impact:"Higher military spending affects domestic budget priorities.",source:"congress.gov"}
+]},
+{name:"Democratic Candidates",party:"Democrat",positions:[
+{issue:"Economy",stance:"Raise minimum wage, expand worker protections, tax corporations more.",evidence:"Support for PRO Act. Proposals to raise minimum wage to $15+.",impact:"Higher minimum wage helps low-income workers.",source:"congress.gov"},
+{issue:"Healthcare",stance:"Protect and expand ACA, lower drug costs, protect abortion rights.",evidence:"Defend IRA drug pricing provisions.",impact:"Drug price negotiations save Medicare billions.",source:"congress.gov, kff.org"},
+{issue:"Immigration",stance:"Comprehensive reform with path to citizenship, DACA protections.",evidence:"Support for bipartisan border bill. DREAM Act proposals.",impact:"Path to citizenship provides stability for millions.",source:"congress.gov"},
+{issue:"Education",stance:"Increase public education funding, expand student debt relief.",evidence:"Support for continued student debt relief programs.",impact:"More funding addresses school resource gaps.",source:"congress.gov, ed.gov"},
+{issue:"Climate",stance:"Defend IRA clean energy investments, stronger emissions targets.",evidence:"Defend $369B clean energy provisions.",impact:"Clean energy transition creates jobs.",source:"congress.gov, epa.gov"},
+{issue:"Gun Policy",stance:"Universal background checks, assault weapons ban, red flag laws.",evidence:"Multiple bills for expanded background checks.",impact:"Background checks could prevent some prohibited sales.",source:"congress.gov"},
+{issue:"Housing",stance:"Expand affordable housing, first-time buyer assistance.",evidence:"Support for Housing Supply Action Plan.",impact:"Down payment assistance enables homeownership for renters.",source:"congress.gov, hud.gov"},
+{issue:"Taxes",stance:"Raise taxes on wealthy, expand credits for working families.",evidence:"Support for billionaire minimum tax.",impact:"Higher taxes on top earners fund social programs.",source:"congress.gov, cbo.gov"},
+{issue:"Criminal Justice",stance:"Police reform, end cash bail, marijuana legalization.",evidence:"George Floyd Justice in Policing Act proposals.",impact:"Police reform could reduce use of force.",source:"congress.gov"},
+{issue:"Foreign Policy",stance:"Support NATO, continue Ukraine aid, promote human rights.",evidence:"Votes for Ukraine aid packages.",impact:"Continued alliances maintain global stability.",source:"congress.gov"}
+]}
+],
+key_differences:["Economy: Republicans favor tax cuts; Democrats favor higher minimum wage and corporate taxes","Healthcare: Republicans want market solutions; Democrats want to expand ACA","Climate: Republicans prioritize fossil fuels; Democrats defend clean energy","Immigration: Republicans focus on enforcement; Democrats push for comprehensive reform"],
+sources:[{name:"Congress.gov",url:"https://congress.gov"},{name:"CBO",url:"https://cbo.gov"},{name:"KFF",url:"https://kff.org"}]
+}
+};
+
+let state={step:"landing",election:"",selectedIssues:[],rankedIssues:[],result:null,expandedIssue:null,followUp:"",followUpAnswer:null,followUpLoading:false,userOpinion:"",voiceFormat:"",voiceResult:null,voiceLoading:false,copied:false};
+
+function setState(updates){
+  Object.assign(state,updates);
+  render();
+}
+
+function toggleIssue(id){
+  let s=[...state.selectedIssues];
+  if(s.includes(id))s=s.filter(i=>i!==id);
+  else if(s.length<5)s.push(id);
+  setState({selectedIssues:s});
+}
+
+function moveUp(i){
+  if(!i)return;
+  let a=[...state.rankedIssues];
+  [a[i-1],a[i]]=[a[i],a[i-1]];
+  setState({rankedIssues:a});
+}
+
+function moveDown(i){
+  if(i>=state.rankedIssues.length-1)return;
+  let a=[...state.rankedIssues];
+  [a[i],a[i+1]]=[a[i+1],a[i]];
+  setState({rankedIssues:a});
+}
+
+function analyze(){
+  setState({result:DATA[state.election],step:"results"});
+}
+
+async function askFollowUp(){
+  if(!state.followUp.trim())return;
+  setState({followUpLoading:true,followUpAnswer:null});
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        messages:[{role:"user",content:`Context: researching "${state.result?.election_name}". Question: "${state.followUp}". Answer concisely, factually, unbiased. Search web if needed.`}]
+      })
+    });
+    const data=await r.json();
+    setState({followUpAnswer:data.content.filter(i=>i.type==="text").map(i=>i.text).join(""),followUpLoading:false});
+  }catch(e){setState({followUpAnswer:"Sorry, something went wrong.",followUpLoading:false})}
+}
+
+async function generateVoice(){
+  if(!state.userOpinion.trim()||!state.voiceFormat)return;
+  setState({voiceLoading:true,voiceResult:null});
+  const fmts={social:"a social media post (punchy, under 280 chars)",letter:"a formal letter to a political representative",argument:"talking points for a respectful dinner conversation",essay:"a short personal essay (3-4 paragraphs)"};
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1500,
+        messages:[{role:"user",content:`The user researched "${state.result?.election_name}" and formed this opinion:\n"${state.userOpinion}"\n\nHelp them express this as ${fmts[state.voiceFormat]}. Keep their authentic voice. Strengthen with facts. Make it compelling. Don't change their opinion. Output only the final text.`}]
+      })
+    });
+    const data=await r.json();
+    setState({voiceResult:data.content.filter(i=>i.type==="text").map(i=>i.text).join(""),voiceLoading:false});
+  }catch(e){setState({voiceResult:"Sorry, something went wrong.",voiceLoading:false})}
+}
+
+function copyText(){
+  navigator.clipboard.writeText(state.voiceResult);
+  setState({copied:true});
+  setTimeout(()=>setState({copied:false}),2000);
+}
+
+function reset(){
+  setState({step:"landing",election:"",selectedIssues:[],rankedIssues:[],result:null,expandedIssue:null,followUp:"",followUpAnswer:null,userOpinion:"",voiceFormat:"",voiceResult:null});
+}
+
+function render(){
+  const app=document.getElementById("app");
+  
+  if(state.step==="landing"){
+    app.innerHTML=`
+      <div style="text-align:center;max-width:600px;margin-bottom:48px">
+        <div class="logo">✓</div>
+        <h1 class="title">Informed Vote</h1>
+        <p class="sub">Vote smart in 5 minutes. Get an unbiased, personalized comparison of candidates — then find your voice and make it heard.</p>
+        <p class="tag">No bias. No fluff. Your voice, amplified.</p>
+        <button class="btn" onclick="setState({step:'election'})">Get Started →</button>
+      </div>
+      <div class="cards">
+        <div class="card"><span>🎯</span><h3>Personalized</h3><p>Prioritized by your issues</p></div>
+        <div class="card"><span>⚖️</span><h3>Unbiased</h3><p>AI analysis, no agenda</p></div>
+        <div class="card"><span>📢</span><h3>Find Your Voice</h3><p>Turn opinions into expression</p></div>
+      </div>`;
+    return;
+  }
+
+  if(state.step==="election"){
+    app.innerHTML=`<div class="box">
+      <div class="step-ind">Step 1 of 4</div>
+      <h2 class="h2">What election are you voting in?</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+        ${ELECTIONS.map(e=>`<button class="opt ${state.election===e?'active':''}" onclick="setState({election:'${e}'})">${e}</button>`).join("")}
+      </div>
+      <div class="nav">
+        <button class="btn2" onclick="setState({step:'landing'})">← Back</button>
+        <button class="btn" ${!state.election?'disabled':''} onclick="setState({step:'issues'})">Next →</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if(state.step==="issues"){
+    app.innerHTML=`<div class="box">
+      <div class="step-ind">Step 2 of 4</div>
+      <h2 class="h2">What issues matter most to you?</h2>
+      <p style="font-size:15px;color:#64748b;margin:0 0 20px">Select 2-5 issues.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        ${ISSUES.map(i=>`<button class="chip ${state.selectedIssues.includes(i.id)?'active':''}" onclick="toggleIssue('${i.id}')">${i.icon} ${i.label}</button>`).join("")}
+      </div>
+      <p style="font-size:13px;color:#64748b">${state.selectedIssues.length}/5 selected</p>
+      <div class="nav">
+        <button class="btn2" onclick="setState({step:'election'})">← Back</button>
+        <button class="btn" ${state.selectedIssues.length<2?'disabled':''} onclick="setState({rankedIssues:ISSUES.filter(i=>state.selectedIssues.includes(i.id)),step:'rank'})">Rank My Issues →</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if(state.step==="rank"){
+    app.innerHTML=`<div class="box">
+      <div class="step-ind">Step 2 of 4 — Rank</div>
+      <h2 class="h2">Rank by importance</h2>
+      <p style="font-size:15px;color:#64748b;margin:0 0 20px">#1 = most important to you.</p>
+      ${state.rankedIssues.map((issue,idx)=>`
+        <div class="rank-item">
+          <span class="rank-num">#${idx+1}</span>
+          <span style="font-size:20px">${issue.icon}</span>
+          <span style="flex:1;font-size:15px;color:#e2e8f0">${issue.label}</span>
+          <button class="arr" onclick="moveUp(${idx})" ${idx===0?'disabled':''}>▲</button>
+          <button class="arr" onclick="moveDown(${idx})" ${idx>=state.rankedIssues.length-1?'disabled':''}>▼</button>
+        </div>`).join("")}
+      <div class="nav">
+        <button class="btn2" onclick="setState({rankedIssues:[],step:'issues'})">← Back</button>
+        <button class="btn" onclick="analyze()">Analyze Candidates →</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if(state.step==="results"&&state.result){
+    const r=state.result;
+    app.innerHTML=`<div class="wide">
+      <div style="text-align:center;margin-bottom:32px">
+        <div class="step-ind">Step 3 of 4 — Results</div>
+        <h2 class="title2">${r.election_name}</h2>
+        <p style="font-size:15px;color:#94a3b8;line-height:1.6;max-width:600px;margin:0 auto">${r.election_context}</p>
+      </div>
+      <div class="sec">
+        <h3 class="h3">🔑 Key Differences</h3>
+        ${r.key_differences.map(d=>`<div class="diff-item"><span style="color:#7c3aed;margin-right:8px;font-weight:700">→</span>${d}</div>`).join("")}
+      </div>
+      <h3 class="h3">📊 Candidate Comparison</h3>
+      <p style="font-size:14px;color:#64748b;margin:0 0 16px">Ordered by YOUR priorities. Click to expand.</p>
+      ${state.rankedIssues.map(issue=>{
+        const exp=state.expandedIssue===issue.id;
+        return`<div class="issue-block">
+          <button class="issue-head" onclick="setState({expandedIssue:state.expandedIssue==='${issue.id}'?null:'${issue.id}'})">
+            <span>${issue.icon} ${issue.label}</span><span>${exp?'▼':'▶'}</span>
+          </button>
+          ${exp?`<div class="comp-grid">${r.candidates.map(c=>{
+            const p=c.positions.find(p=>p.issue.toLowerCase().includes(issue.label.toLowerCase().split(" ")[0])||issue.label.toLowerCase().includes(p.issue.toLowerCase().split(" ")[0]));
+            return`<div class="cand-card">
+              <div class="cand-name">${c.name}<span class="badge">${c.party}</span></div>
+              ${p?`
+                <div style="margin-bottom:12px"><div class="lbl">Position</div><div style="font-size:14px;color:#cbd5e1;line-height:1.5">${p.stance}</div></div>
+                <div style="margin-bottom:12px"><div class="lbl">Evidence</div><div style="font-size:13px;color:#94a3b8;line-height:1.5;font-style:italic">${p.evidence}</div></div>
+                <div style="margin-bottom:12px"><div class="lbl">Impact on You</div><div style="font-size:13px;color:#86efac;line-height:1.5">${p.impact}</div></div>
+                <div><div class="lbl">Source</div><div style="font-size:12px;color:#64748b">${p.source}</div></div>
+              `:`<p style="font-size:14px;color:#475569;font-style:italic">No specific position found.</p>`}
+            </div>`;
+          }).join("")}</div>`:''}
+        </div>`;
+      }).join("")}
+      <div class="sec" style="margin-top:24px">
+        <h3 class="h3">📚 Sources</h3>
+        <div>${r.sources.map(s=>`<a class="source-link" href="${s.url}" target="_blank">${s.name} ↗</a>`).join("")}</div>
+      </div>
+      <div class="sec">
+        <h3 class="h3">💬 Have a question?</h3>
+        <div style="display:flex;gap:8px">
+          <input class="inp" style="flex:1" placeholder="e.g. What's their stance on student loans?" id="followUpInp" value="${state.followUp}" oninput="state.followUp=this.value" onkeydown="if(event.key==='Enter')askFollowUp()">
+          <button class="btn" onclick="askFollowUp()" ${state.followUpLoading?'disabled':''}>${state.followUpLoading?'...':'Ask'}</button>
+        </div>
+        ${state.followUpAnswer?`<div style="margin-top:16px;font-size:14px;color:#cbd5e1;line-height:1.6;background:rgba(255,255,255,0.03);border-radius:12px;padding:16px">${state.followUpAnswer}</div>`:''}
+      </div>
+      <div style="text-align:center;margin-top:32px">
+        <button class="btn" onclick="setState({step:'voice'})">Find Your Voice →</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if(state.step==="voice"){
+    app.innerHTML=`<div class="wide">
+      <div style="text-align:center;margin-bottom:32px">
+        <div class="step-ind">Step 4 of 4 — Find Your Voice</div>
+        <h2 class="title2">Make Your Voice Heard</h2>
+        <p style="font-size:15px;color:#94a3b8;line-height:1.6;max-width:600px;margin:0 auto">Now that you're informed, express your opinion. Write what you think — messy, raw, any language — and we'll amplify it.</p>
+      </div>
+      <div class="sec">
+        <h3 class="h3">✍️ What's your take?</h3>
+        <textarea class="inp" placeholder="Write your honest opinion... messy, informal, even Spanglish." id="opinionInp" oninput="state.userOpinion=this.value">${state.userOpinion}</textarea>
+      </div>
+      <div class="sec">
+        <h3 class="h3">📣 How do you want to express it?</h3>
+        <div class="fmt-grid">
+          ${FORMATS.map(f=>`<button class="opt ${state.voiceFormat===f.id?'active':''}" style="text-align:center" onclick="setState({voiceFormat:'${f.id}'})">
+            <span style="font-size:24px">${f.icon}</span>
+            <div style="font-size:14px;font-weight:600;color:#e2e8f0;margin-top:8px">${f.label}</div>
+            <div style="font-size:12px;color:#64748b;margin-top:4px">${f.desc}</div>
+          </button>`).join("")}
+        </div>
+      </div>
+      ${!state.voiceResult?`<div style="text-align:center;margin-top:24px">
+        <button class="btn" ${!state.userOpinion.trim()||!state.voiceFormat||state.voiceLoading?'disabled':''} onclick="generateVoice()">
+          ${state.voiceLoading?'Crafting your voice...':'Amplify My Voice →'}
+        </button>
+      </div>`:''}
+      ${state.voiceResult?`<div class="voice-result">
+        <h3 class="h3">🎤 Your Voice, Amplified</h3>
+        <div class="voice-text">${state.voiceResult}</div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn-green" onclick="copyText()">${state.copied?'✓ Copied!':'📋 Copy to Clipboard'}</button>
+          <button class="btn2" onclick="setState({voiceResult:null,voiceFormat:''})">Try Different Format</button>
+        </div>
+      </div>`:''}
+      <div class="nav">
+        <button class="btn2" onclick="setState({step:'results'})">← Back to Results</button>
+        <button class="btn2" onclick="reset()">Start Over</button>
+      </div>
+      <div class="footer">
+        <p>Built at CMU Anthropic Speedrun Hackathon 2026</p>
+        <p>Powered by Claude AI · Data from Congress.gov, CBO, KFF, Ballotpedia, Reuters & official government records</p>
+      </div>
+    </div>`;
+    return;
+  }
+}
+
+render();
+</script>
+</body>
+</html>
